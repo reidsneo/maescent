@@ -1,0 +1,3 @@
+#!/bin/bash
+phpPath=/usr/share/centreon/www/lib/libssh
+php $phpPath/fetchbusdetail.php "$1"

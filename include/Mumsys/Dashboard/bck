@@ -1,0 +1,101 @@
+{literal}
+<style type="text/css">
+.panel-group .panel {
+    border-radius: 4px;
+    margin-bottom: 0;
+}
+.panel-group .panel {
+    border-radius: 4px;
+    margin-bottom: 0;
+}
+.panel-default {
+    border-color: #ddd;
+}
+.panel {
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+.panel-default {
+    border-color: #ddd;
+}
+.panel {
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+.panel-default > .panel-heading {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    color: #333;
+}
+.panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 10px 15px;
+}
+.panel-title {
+    color: inherit;
+    font-size: 16px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.panel-group {
+    margin-bottom: 20px;
+}
+
+
+#container {
+    overflow:hidden;
+    width: 100%;
+    min-width: 940px;
+    /* float: left; */
+}
+
+#leftcol {
+    border: 1px solid #0f0;
+    float: left;
+    width: 200px;
+}
+
+#rightcol {
+    border: 1px solid #0f0;
+    float: right;
+    width: 250px;
+}
+
+#centercol {
+    border: 1px solid #000;
+    margin-left: 200px;
+    margin-right: 250px;
+}
+
+</style>
+{/literal}
+
+<div id="container">
+    <div id="leftcol">
+       
+{assign var=val value=0}
+{foreach from=$busdat key=index item=i}
+{assign var=val value=$val+1}
+{if $val>1}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="width:900px" value="176"><div class="panel panel-default"><div class="panel-heading" role="tab" id="headingOne"><h4 class="panel-title"><a class="collapsed" id="colls" style="ali float:left; margin-right:15px;">{$i.id_alert}</a><a float:="" left;="" style="ali text-align: right; float:right; ">{$i.date}</a></h4></div><div id="collapse176" class="coll176" role="tabpanel" aria-labelledby="headingOne"><div class="panel-body"><table style="width:100%;"><tbody><tr><td style="width:60%;">Reason : <br><label style="font-weight:Bold; color: red;">{$i.alert}</label><br> Priority : 3<br>open<br><label>Assigned to : &nbsp;</label><label class="asgn176" for="assign" style="font-weight:Bold; color: red;"> not assign</label></td><td><label>Description : &nbsp;</label> <br><textarea rows="4" cols="50" disabled="" id="uxMessage" name="uxMessage"></textarea></td></tr><tr><td></td></tr></tbody></table></div></div></div></div>
+{else}
+ <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="width:900px" value="176"><div class="panel panel-default"><div class="panel-heading" role="tab" id="headingOne"><h4 class="panel-title"><a class="collapsed" id="colls" style="ali float:left; margin-right:15px;">{$i.id_alert}</a><a float:="" left;="" style="ali text-align: right; float:right; ">{$i.date}</a></h4></div><div id="collapse176" class="coll176" role="tabpanel" aria-labelledby="headingOne"><div class="panel-body"><table style="width:100%;"><tbody><tr><td style="width:60%;">Reason : <br><label style="font-weight:Bold; color: red;">{$i.alert}</label><br> Priority : 3<br>open<br><label>Assigned to : &nbsp;</label><label class="asgn176" for="assign" style="font-weight:Bold; color: red;"> not assign</label></td><td><label>Description : &nbsp;</label> <br><textarea rows="4" cols="50" disabled="" id="uxMessage" name="uxMessage"></textarea></td></tr><tr><td></td></tr></tbody></table></div></div></div></div>
+{/if}
+{/foreach}
+
+    </div>
+    <div id="rightcol">
+        Text3
+    </div>  
+    <div id="centercol">
+        Text2
+    </div>
+</div>

@@ -1,0 +1,9 @@
+HOST;setinstance;5685;Poller-1
+HOST;setinstance;5686;Poller-1
+HOST;setinstance;5687;Poller-1
+HOST;setinstance;5689;Poller-1
+HOST;setinstance;5690;Poller-1
+HOST;setinstance;5691;Poller-1
+HOST;setinstance;9167;Poller-1
+HOST;setinstance;9168;Poller-1
+HOST;setinstance;9169;Poller-1

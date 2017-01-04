@@ -1,0 +1,62 @@
+<configs>
+    <title>Event Logs</title>
+    <author>Centreon</author>
+    <email>contact@centreon.com</email>
+    <website>http://www.centreon.com</website>
+    <description>Widget for displaying event logs</description>
+    <version>1.0.0</version>
+    <keywords>centreon, widget, event, logs</keywords>
+    <screenshot></screenshot>
+    <thumbnail>./widgets/logs/resources/centreon-logo.png</thumbnail>
+    <url>./widgets/logs/index.php</url>
+    <autoRefresh>10</autoRefresh>
+    <preferences>
+        <preference label="Object Name Search" name="object_name_search" defaultValue="" type="compare" header="Filters"/>
+        <preference label="Output Search" name="output_search" defaultValue="" type="compare"/>
+        <preference label="Display Error" name="error" defaultValue="1" type="boolean"/>
+        <preference label="Display Alert" name="alert" defaultValue="1" type="boolean"/>
+        <preference label="Display Notification" name="notification" defaultValue="1" type="boolean"/>
+        <preference label="Display Info" name="info" defaultValue="0" type="boolean"/>
+        <preference label="Display Up" name="host_up" defaultValue="1" type="boolean"/>
+        <preference label="Display Down" name="host_down" defaultValue="1" type="boolean"/>
+        <preference label="Display Unreachable" name="host_unreachable" defaultValue="1" type="boolean"/>
+        <preference label="Display Ok" name="service_ok" defaultValue="1" type="boolean"/>
+        <preference label="Display Warning" name="service_warning" defaultValue="1" type="boolean"/>
+        <preference label="Display Critical" name="service_critical" defaultValue="1" type="boolean"/>
+        <preference label="Display Unknown" name="service_unknown" defaultValue="1" type="boolean"/>
+        <preference label="State Type" name="state_type_filter" type="list">
+            <option value="hardonly" label="Hard Only"/>
+            <option value="softonly" label="Soft Only"/>
+        </preference>
+        <preference label="Logs period" name="log_period" type="list" defaultValue="86400">
+            <option value="10800" label="Last 3 hours"/>
+            <option value="21600" label="Last 6 hours"/>
+            <option value="43200" label="Last 12 hours"/>
+            <option value="86400" label="Last 24 hours"/>
+            <option value="172800" label="Last 2 days"/>
+            <option value="259200" label="Last 3 days"/>
+            <option value="302400" label="Last 4 days"/>
+            <option value="432000" label="Last 5 days"/>
+            <option value="604800" label="Last 7 days"/>
+            <option value="1209600" label="Last 14 days"/>
+            <option value="2419200" label="Last 28 days"/>
+            <option value="2592000" label="Last 30 days"/>
+            <option value="2678400" label="Last 31 days"/>
+            <option value="5184000" label="Last 2 months"/>
+            <option value="10368000" label="Last 4 months"/>
+            <option value="15552000" label="Last 6 months"/>
+            <option value="31104000" label="Last year"/>
+        </preference>
+        <preference label="Results" name="entries" defaultValue="50" type="range" min="10" max="100" step="10"/>
+        <preference label="Display Date" name="display_date" defaultValue="1" type="boolean" header="Columns"/>
+        <preference label="Display Object Name" name="display_object_name" defaultValue="1" type="boolean"/>
+        <preference label="Display Status" name="display_status" defaultValue="1" type="boolean"/>
+        <preference label="Display Type" name="display_type" defaultValue="1" type="boolean"/>
+        <preference label="Display Tries" name="display_tries" defaultValue="1" type="boolean"/>
+        <preference label="Display Output" name="display_output" defaultValue="1" type="boolean"/>
+        <preference label="Output Length" name="output_length" defaultValue="50" type="range" min="50" max="500" step="50"/>
+        <preference label="Display Contact" name="display_contact" defaultValue="0" type="boolean"/>
+        <preference label="Display Command" name="display_command" defaultValue="0" type="boolean"/>
+        <preference label="Refresh Interval (seconds)" name="refresh_interval" defaultValue="30" type="text" header="Misc"/>
+    </preferences>
+</configs>

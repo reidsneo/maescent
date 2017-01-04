@@ -1,0 +1,62 @@
+<html> 
+  <head>
+    <title>Event Logs</title>
+    <link href="../../Themes/Centreon-2/Color/blue_css.php" rel="stylesheet" type="text/css"/>
+    <link href="../../Themes/Centreon-2/style.css" type="text/css" rel="styleheet"/>
+    <link href="../../include/common/javascript/jquery/plugins/pagination/pagination.css" rel="stylesheet" type="text/css"/>
+    {literal}
+    <style type="text/css">
+      .ListTable{font-size:11px;border-color: #BFD0E2;}
+    </style>
+    <style> @import url('../../Themes/Centreon-2/style.css'); </style>
+    {/literal}
+    <script type="text/javascript" src="../../include/common/javascript/jquery/jquery.js"></script>
+    <script type="text/javascript" src="../../include/common/javascript/jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../include/common/javascript/widgetUtils.js"></script>
+    <script type="text/javascript" src="../../include/common/javascript/jquery/plugins/pagination/jquery.pagination.js"></script>
+    {literal}	
+    <style type="text/css">
+      .ListTable{font-size:11px;border-color: #BFD0E2;}
+    </style>
+    {/literal}
+  </head>
+  <body>
+    <div id='eventLogsTable'></div>
+  </body>
+  <script type="text/javascript">
+    var widgetId = "{$widgetId}";
+    var autoRefresh = "{$autoRefresh}";
+    var timeout;
+    var itemsPerPage = {$preferences.entries};
+    var pageNumber = 0;
+    var clickedCb = new Array();
+    var broker = "{$broker}";
+    {literal}
+    
+    jQuery(function() {
+        loadPage();
+    });
+    
+    /**
+     * Load Page
+     */
+    function loadPage() {
+    jQuery.ajax("./src/index.php?widgetId="+widgetId+"&page="+pageNumber, {        
+       success : function(htmlData) {
+          jQuery("#eventLogsTable").html("");
+          jQuery("#eventLogsTable").html(htmlData);
+          var h = document.getElementById("eventLogsTable").scrollHeight;
+          parent.iResize(window.name, h);
+        }
+    });
+    if (autoRefresh) {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(loadPage, (autoRefresh * 1000));
+    }
+}
+</script>
+{/literal}
+</body>
+</html>

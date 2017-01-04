@@ -1,0 +1,9 @@
+#!/bin/bash
+until [[ "$(date)" =~ "10:54:" ]]; do
+    sleep 10
+done
+echo "mailer";
+php "daemon_notify_email.php";
+./daemon_mailer
+
+#jam 10 NL = jam 5 ID

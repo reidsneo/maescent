@@ -1,0 +1,68 @@
+{literal}
+    <style>
+        @import url('../../Themes/Centreon-2/style.css');
+    </style>
+{/literal}
+<table id='ServicegroupTable' class='ListTable styleTable'>
+    <tr class="ListHeader">
+        <td class='ListColHeaderLeft' name='name' {if $preferences.enable_detailed_mode == 1} colspan='2'{/if}>{t}Servicegroups{/t}{if $preferences.enable_detailed_mode == 1}/{t}Hosts{/t}{/if}</td>
+        <td class="ListColHeaderLeft">{t}Status{/t}</td>
+        <td class='ListColHeaderLeft'>{t}Service informations{/t}</td>
+    </tr>
+{assign var='classStyle' value='list_two'}
+{foreach key=sgId item=elem from=$data}
+    {if $classStyle == 'list_two'}
+        {assign var='classStyle' value='list_one'}
+    {else}
+        {assign var='classStyle' value='list_two'}
+    {/if}
+    {if $preferences.enable_detailed_mode == 0}
+    <tr id="sg-{$sgId}" class='{$classStyle}'>
+        <td class='ListColLeft'>{$elem.name}</td>
+        <td class='ListColLeft'>
+            {foreach key=state item=counter from=$elem.host_state}
+            <span class="state_badge" style='background-color: {$hostStateColors[$state]};'></span><span class='margin_right'>{$counter}</span>
+            {/foreach}
+        </td>
+        <td class='ListColLeft'>
+            {foreach key=state item=counter from=$elem.service_state}
+            <span class="state_badge" style='background-color: {$serviceStateColors[$state]};'></span><span class='margin_right'>{$counter}</span>
+            {/foreach}
+        </td>
+    </tr>
+    {else}
+    <tr id="sg-{$sgId}" class='{$classStyle}'>
+        <td class='ListColLeft' colspan='4'>{$elem.name}</td>
+    </tr>
+    {foreach item=elem2 from=$elem.host_state}
+    {if $classStyle == 'list_two'}
+        {assign var='classStyle' value='list_one'}
+    {else}
+        {assign var='classStyle' value='list_two'}
+    {/if}
+    <tr id="host-{$elem2.host_id}" class="{$classStyle}">
+        <td class='ListColLeft' width='160' style="padding-left: 19px;"><img src="../../img/icons/host.png" class="margin_right ico-18">{$elem2.name}</td>
+        <td class='ListColLeft' style='white-space:nowrap;width:37px;'>
+            <a href='../../main.php?p=20202&o=hd&host_name={$elem2.name}' target=_blank><img src='../../img/icons/view.png' class='ico-18' /></a>&nbsp;
+            <a href='../../main.php?p=204&mode=0&svc_id={$elem2.name}' target=_blank><img src='../../img/icons/chart.png' class='ico-18' /></a>
+        </td>
+        <td class='ListColCenter' style='white-space:nowrap;'><span class='badge {$aColorHost[$elem2.state]}'>{$hostStateLabels[$elem2.state]}</span></td>
+        <td class='ListColLeft'>
+            {foreach item=elem3 from=$elem.service_state[$elem2.host_id]}
+            <a target="_blank" href="../../main.php?p=202&o=svcd&host_name={$elem2.name}&service_description={$elem3.description}"><span class='state_badge {$aColorService[$elem3.state]}'></span>{$elem3.description}</a>&nbsp;
+            {/foreach}
+        </td>
+    </tr>
+    {/foreach}
+    {/if}
+{/foreach}  
+</table>
+<script>
+    var widgetId = {$widgetId};
+    var autoRefresh = {$autoRefresh};
+    var nbRows = {$nbRows};
+    var currentpage = {$page};
+    var orderby = "{$orderby}";
+    var nbCurrentItems = {$dataJS};
+</script>
+<script type="text/javascript" src="src/data_js.js"></script>

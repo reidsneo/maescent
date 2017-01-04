@@ -1,0 +1,73 @@
+{literal}
+<style type="text/css">
+    #titledash{
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+        font-size: 30px;
+        margin-bottom: 15px;
+    }
+    .columnbus,.lblbus{
+        cursor: pointer;
+        color:#333;
+    }
+    .databuswrap{
+        width: 85%;
+         -webkit-touch-callout: none;
+         -webkit-user-select: none;
+         -khtml-user-select: none;
+         -moz-user-select: none;
+         -ms-user-select: none;
+         user-select: none;
+     }
+
+    .tipsdat{
+    background:#F8F8F8;
+    border: 5px solid #DFDFDF;
+    color: #717171;
+    font-size: 13px;
+    height: 30px;
+    letter-spacing: 1px;
+    line-height: 30px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    top: -80px;
+    left:-30px;
+    display:none;
+    padding:0 20px;
+    }
+
+</style>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+       setInterval(function (){
+            console.log("testing");//databuswrap
+        },5000);
+    });
+</script>
+
+
+{/literal}
+
+<h1 id='titledash'>Alert Flag Today {$datenow}</h1>
+<div class='databuswrap'>
+{foreach from=$bus key=myId item=i}
+<a href="http://{$smarty.server.HTTP_HOST}{$smarty.server.REQUEST_URI}&busid={$i.hostname}">
+<div id="{$i.hostname}" class="columnbus" value="{$i.hostname}" style="float:left; margin: 5px; border:1px solid black; float: left; width:170px; height:95px;
+    {if $i.redled>2}
+    background: #ff3333;
+    {else}
+    background: #FCFF00;
+    {/if}
+">
+<span class='tipsdat'>tes</span>
+<label for="lbBus" class="lblbus" style="font-size:45px; margin-top: 2px; margin-left: 5px;">{$i.hostname}</label><br>
+    <label for="lbcer" style="font-size:14px; margin-left:6px;" class="lblbus"> Last Alert : {$busdat[$i.hostname].is_recording} </label><br>
+{*$smarty.now|date_format:"%Y-%m-%d %H:%M:%S"*}
+{$i.last_check}
+    <label for="lbcer" style="font-size:14px; margin-left:6px;" class="lblbus"> Duration : {$i.last_check|date_format:"%Y-%m-%d"} </label><br>
+<label style="font-size:8px; margin-left:25px;"  class="lblbus"> Total Assign : 0 </label><br><br>
+</div></a>
+{/foreach}

@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title>Video</title>
+	<style>
+	video{ display:none;}
+	</style>
+</head>
+<body>
+	<video autoplay id="video"></video>
+	<canvas id='miCanvas' width='200' height='150'></canvas>
+    <script language="javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script language="javascript" src="js/fancywebsocket.js"></script>
+	<script>
+		var bandera=0;
+		//si el navegador soporta esta caracteristica 
+		
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+
+		if (navigator.getUserMedia) //si es compatible
+		{		
+			navigator.getUserMedia ({audio: false, video:true},	
+			function(vid) 
+			{
+				bandera = 1;
+				document.querySelector('video').src = window.URL.createObjectURL(vid);
+			 },
+      		function(err) {
+         		console.log("The following error occured: " + err);
+      		}
+   			);
+		} 	
+		else 
+		{
+	   		console.log("getUserMedia not supported");
+		}	
+		
+		window.requestAnimFrame = (function(callback)
+		{
+			return window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			function(callback){
+				window.setTimeout(callback, 1000/100 );
+			};
+		})();
+		function dFrame(ctx,video,canvas)
+		{
+			ctx.drawImage(video,0,0,200,150);		
+			var dataURL = canvas.toDataURL('image/jpeg',0.2);
+			if(bandera!=0) 
+			{
+				send(dataURL);//este es el socket  
+			}
+			
+			requestAnimFrame(function(){
+				setTimeout(function(){dFrame(ctx,video,canvas);},200)
+			});
+		}
+		window.addEventListener('load',init);//inicia cuando carga la pagina
+		function init()
+		{
+			var canvas = document.querySelector('#miCanvas');
+			var video = document.querySelector('video');
+			var ctx = canvas.getContext('2d');
+			dFrame(ctx,video,canvas);
+		}
+		function video()
+		{
+		}
+	</script>
+</body>
+</html>

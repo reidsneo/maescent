@@ -1,0 +1,155 @@
+#!/bin/bash
+while :
+do
+php_cwd=`/usr/bin/php << 'EOF'
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(0);
+$username = "root";
+$password = "toor";
+$hostname = "192.168.87.71";
+$output="";
+$redalert=mysql_connect($hostname, $username, $password);
+mysql_select_db("centreon_storage");
+$dt=mysql_query("SELECT SQL_CALC_FOUND_ROWS h.name AS hostname,s.description,s.output,s.last_check, s.last_state_change, s.last_hard_state_change FROM centreon_storage.hosts h, centreon_storage.services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND s.host_id = cv.host_id AND cv.name = 'CRITICALITY_LEVEL') LEFT JOIN customvariables cv2 ON (s.service_id = cv2.service_id AND s.host_id = cv2.host_id AND cv2.name = 'CRITICALITY_ID') WHERE s.host_id = h.host_id AND h.name NOT LIKE '_Module_%' AND s.enabled = 1 AND h.enabled = 1 AND s.output LIKE '%alert%' AND s.description LIKE '%led%'");
+while($rowled=mysql_fetch_array($dt)){
+	$findnya = array("/opt/mnp/flags/tftFlag/", "\r\n","\r","\n","\\r","\\n","\\r\\n","/opt/mnp/flags/ibisFlag/","/opt/mnp/flags/miscFlag/","/opt/mnp/flags/ntpFlag/","alert_","alert-","/opt/mnp/flags/ledFlag/"," geen alarm","geen alarm");
+    $replacenya   = array("", " "," "," "," "," "," ","","","",",",",","","","");
+    $output=trim(str_replace($findnya,$replacenya,$rowled['output']));
+    $output = str_replace(' ', '', $output);
+    $output=preg_replace( "/\r|\n/", "", $output);
+    $output = str_replace(array('\r', '\n'), '', $output);
+    $outputexp=array_unique(explode(",", $output));
+    $output=implode(",", $outputexp);
+    $busloc=explode("-", $rowled["description"]);
+
+    $record=0;
+    $nvs=0;
+    $ssd=0;
+    $pftlux=0;
+    $pfttemp=0;
+    $chkfilesize=0;
+    foreach ($outputexp as $key => $val) {
+        if (strpos(trim($val),'nNVS')!== FALSE){
+            $record=$record+1;
+        }
+        if (strpos(trim($val),'cam')!== FALSE){
+            $record=$record+1;
+        }
+        if (strpos(trim($val),'nvs-offline')!== FALSE){
+            $nvs=$nvs+1;
+        }
+        if (strpos(trim($val),'ssd')!== FALSE){
+            $ssd=$ssd+1;
+        }
+        if (strpos(trim($val),'pfttemp')!== FALSE){
+            $pfttemp=$pfttemp+1;
+        }
+        if (strpos(trim($val),'pftlux')!== FALSE){
+            $pftlux=$pftlux+1;
+        }
+        if (strpos(trim($val),'chkfilesize')!== FALSE){
+            $chkfilesize=$chkfilesize+1;
+        }
+    }
+    if($nvs>0){
+        $record=0;
+    }
+    if($ssd>0){
+        $record=0;
+    }
+    $lastchk = date("Y-m-d H:i:s",$rowled["last_check"]);
+    $statechk = date("Y-m-d H:i:s",$rowled["last_state_change"]);
+    $hardchk = date("Y-m-d H:i:s",$rowled["last_hard_state_change"]);
+    $outputledfinal=trim(substr($output,1));
+    mysql_select_db("mnp_rack");
+	$chk=mysql_num_rows(mysql_query("SELECT id_alert,bus_id,msg_alert,lastcheck FROM daily_alert WHERE bus_id='".$rowled['hostname']."' AND msg_alert='".$outputledfinal."' AND lastcheck LIKE '%".date("Y-m-d")."%' ORDER BY id_alert DESC LIMIT 1;"));
+	if($chk==0){
+		echo "[".$rowled['hostname']."]\n";
+		mysql_query("INSERT INTO daily_alert (bus_id,bus_locate, msg_alert,is_recording,is_nvs_offline,is_ssd,is_pftlux,is_pfttemp,is_chkfilesize, lastcheck,statecheck,hardcheck) VALUES ('".$rowled['hostname']."','".$busloc[1]."', '".$outputledfinal."', '".$record."', '".$nvs."', '".$ssd."', '".$pftlux."', '".$pfttemp."', '".$chkfilesize."','".$lastchk."','".$statechk."','".$hardchk."'); ");
+    }else{
+    	echo $rowled['hostname']."\n";
+	//	mysql_query("UPDATE daily_alert SET lastcheck = '".$lastchk."',hardcheck = '".$hardchk."' WHERE bus_id='".$rowled['hostname']."' AND msg_alert='".$outputledfinal."' AND lastcheck LIKE '%".date("Y-m-d")."%';");
+    }
+    echo "\ntotaldataled :".$chk."\n";;
+   //echo "SELECT id_alert,bus_id,msg_alert,statecheck FROM daily_alert WHERE bus_id='".$rowled['hostname']."' AND msg_alert='".$outputledfinal."' AND statecheck LIKE '%".date("Y-m-d")."%' ORDER BY id_alert DESC LIMIT 1;";
+}
+
+mysql_close($redalert);
+$outputpft="";
+$pftalert=mysql_connect($hostname, $username, $password);
+mysql_select_db("centreon_storage");
+$dt=mysql_query("SELECT SQL_CALC_FOUND_ROWS h.name AS hostname,s.description,s.output,s.last_check, s.last_state_change, s.last_hard_state_change FROM centreon_storage.hosts h, centreon_storage.services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND s.host_id = cv.host_id AND cv.name = 'CRITICALITY_LEVEL') LEFT JOIN customvariables cv2 ON (s.service_id = cv2.service_id AND s.host_id = cv2.host_id AND cv2.name = 'CRITICALITY_ID') WHERE s.host_id = h.host_id AND h.name NOT LIKE '_Module_%' AND s.enabled = 1 AND h.enabled = 1 AND s.output LIKE '%alert%' AND s.output LIKE '%pft%'");
+while($rowpft=mysql_fetch_array($dt)){
+	$findnya = array("/opt/mnp/flags/tftFlag/", "\r\n","\r","\n","\\r","\\n","\\r\\n","/opt/mnp/flags/ibisFlag/","/opt/mnp/flags/miscFlag/","/opt/mnp/flags/ntpFlag/","alert_","alert-","/opt/mnp/flags/ledFlag/"," geen alarm","geen alarm");
+    $replacenya   = array("", " "," "," "," "," "," ","","","",",",",","","","");
+    $outputpft=trim(str_replace($findnya,$replacenya,$rowpft['output']));
+    $outputpft = str_replace(' ', '', $outputpft);
+    $outputpft=preg_replace( "/\r|\n/", "", $outputpft);
+    $outputpft = trim(str_replace(array("\r", "\n"), '', $outputpft));
+    $outputpft = str_replace(array('\r', '\n'), '', $outputpft);
+    $outputexppft=array_unique(explode(",", $outputpft));
+    $outputpft=implode(",", $outputexppft);
+    $buslocpft=explode("-", $rowpft["description"]);
+
+    $record=0;
+    $nvs=0;
+    $ssd=0;
+    $pftlux=0;
+    $pfttemp=0;
+    $chkfilesize=0;
+    foreach ($outputexppft as $key => $val) {
+        if (strpos(trim($val),'nNVS')!== FALSE){
+            $record=$record+1;
+        }
+        if (strpos(trim($val),'cam')!== FALSE){
+            $record=$record+1;
+        }
+        if (strpos(trim($val),'nvs-offline')!== FALSE){
+            $nvs=$nvs+1;
+        }
+        if (strpos(trim($val),'ssd')!== FALSE){
+            $ssd=$ssd+1;
+        }
+        if (strpos(trim($val),'pfttemp')!== FALSE){
+            $pfttemp=$pfttemp+1;
+        }
+        if (strpos(trim($val),'pftlux')!== FALSE){
+            $pftlux=$pftlux+1;
+        }
+        if (strpos(trim($val),'chkfilesize')!== FALSE){
+            $chkfilesize=$chkfilesize+1;
+        }
+    }
+    if($nvs>0){
+        $record=0;
+    }
+    if($ssd>0){
+        $record=0;
+    }
+    $lastchkpft = date("Y-m-d H:i:s",$rowpft["last_check"]);
+    $statechkpft = date("Y-m-d H:i:s",$rowpft["last_state_change"]);
+    $hardchkpft = date("Y-m-d H:i:s",$rowpft["last_hard_state_change"]);
+    $pftoutputfinal=trim(substr($outputpft,1));
+    mysql_select_db("mnp_rack");
+	$chkpft=mysql_num_rows(mysql_query("SELECT id_alert,bus_id,msg_alert,lastcheck FROM daily_alert WHERE bus_id='".$rowpft['hostname']."' AND msg_alert='".$pftoutputfinal."' AND lastcheck LIKE '%".date("Y-m-d")."%' ORDER BY id_alert DESC LIMIT 1;"));
+	if($chkpft==0){
+        //echo "[";
+		echo $rowpft['hostname'];
+       // echo "]";echo "\n";
+		mysql_query("INSERT INTO daily_alert (bus_id,bus_locate, msg_alert,is_recording,is_nvs_offline,is_ssd,is_pftlux,is_pfttemp,is_chkfilesize, lastcheck,statecheck,hardcheck) VALUES ('".$rowpft['hostname']."','".$buslocpft[1]."', '".$pftoutputfinal."', '".$record."', '".$nvs."', '".$ssd."', '".$pftlux."', '".$pfttemp."', '".$chkfilesize."','".$lastchkpft."','".$statechkpft."','".$hardchkpft."'); ");
+    }else{
+    	echo $rowpft['hostname']."\n";
+		//mysql_query("UPDATE daily_alert SET lastcheck = '".$lastchkpft."',hardcheck = '".$hardchkpft."' WHERE bus_id='".$rowpft['hostname']."' AND msg_alert='".$pftoutputfinal."' AND lastcheck LIKE '%".date("Y-m-d")."%';");
+    }
+    echo "\ntotaldatapft :".$chkpft."\n";
+   // echo "\n\n\nSELECT id_alert,bus_id,msg_alert,statecheck FROM daily_alert WHERE bus_id='".$rowpft['hostname']."' AND msg_alert='".$pftoutputfinal."' AND statecheck LIKE '%".date("Y-m-d")."%' ORDER BY id_alert DESC LIMIT 1;";
+}
+mysql_close($pftalert);
+ ?>
+EOF`
+echo $php_cwd;
+#echo "Press [CTRL+C] to stop.."
+	sleep 3
+done

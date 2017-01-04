@@ -1,0 +1,62 @@
+<div id='actionBar' style='width:100%;'>
+     <div id='pagination' class='pagination' style='float:left;text-align:right;margin:12px 0px 10px 12px;'></div>
+</div>
+<table class='StyleTable ListTable'>
+  <tr class="ListHeader">
+    {if $preferences.display_status}<td class='ListColHeaderCenter'>Status</td>{/if}
+    {if $preferences.display_object_name}<td class='ListColHeaderCenter'>Object name</td>{/if}
+    {if $preferences.display_date}<td class='ListColHeaderCenter'>Date</td>{/if}
+    {if $preferences.display_type}<td class='ListColHeaderCenter'>Type</td>{/if}
+    {if $preferences.display_tries}<td class='ListColHeaderCenter'>Att.</td>{/if}
+    {if $preferences.display_output}<td class='ListColHeaderLeft'>Output</td>{/if}
+    {if $preferences.display_contact}<td class='ListColHeaderCenter'>Contact</td>{/if}
+    {if $preferences.display_command}<td class='ListColHeaderCenter'>Command</td>{/if}
+  </tr>
+  {assign var='classStyle' value='list_two'} 
+  {foreach item=elem from=$data}
+  {if $classStyle == 'list_two'}
+  {assign var='classStyle' value='list_one'}
+  {else}
+  {assign var='classStyle' value='list_two'}
+  {/if}
+  <tr class='{$classStyle}'>
+    {if $preferences.display_status}<td class='ListColCenter'><span style='background-color:{$elem.color};font-weight:bold;' class="badge">{$elem.status}</span></td>{/if}
+    {if $preferences.display_object_name}
+    <td class='ListColCenter'>
+      <a href="/centreon/main.php?p=20202&o=hd&host_name={$elem.object_name1}" target="_blank">{$elem.object_name1}</a>
+      {if $elem.object_name2 != NULL} / 
+      <a href="/centreon/main.php?p=20201&o=svcd&host_name={$elem.object_name1}&service_description={$elem.object_name2}" target="_blank">{$elem.object_name2}</a> 
+      {/if}
+    </td>
+    {/if}
+    {if $preferences.display_date}<td class='ListColCenter'>{$elem.ctime}</td>{/if}
+    {if $preferences.display_type}<td class='ListColCenter'>{$elem.type}</td>{/if}
+    {if $preferences.display_tries}<td class='ListColCenter'>{$elem.retry}</td>{/if}
+    {if $preferences.display_output}<td class='ListColLeft'>{$elem.output}</td>{/if}
+    {if $preferences.display_contact}<td class='ListColCenter'>{$elem.notification_contact}</td>{/if}
+    {if $preferences.display_command}<td class='ListColCenter'>{$elem.notification_cmd}</td>{/if}
+  </tr>
+  {/foreach}
+  
+  {assign var="colspan" value=8}
+  {if $preferences.display_status == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_object_name == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_date == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_type == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_tries == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_output == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_contact == 0}{assign var="colspan" value=$colspan-1}{/if}
+  {if $preferences.display_command == 0}{assign var="colspan" value=$colspan-1}{/if}
+  
+  <tr><td colspan='{$colspan}' class='ListColCenter'><b>{$nblines} / {$nbRows} Results - <a href="#">Display more logs</a></b></td></tr>
+</table>
+</div>
+<script>
+  var widgetId = "{$widgetId}";
+  var autoRefresh = "{$autoRefresh}";
+  var nbRows = {$nbRows};
+  var currentpage = "{$page}";
+  var orderby = "{$orderby}";
+  var nbCurrentItems = "{$dataJS}";
+</script>
+<script type="text/javascript" src="src/data_js.js"></script>
