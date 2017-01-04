@@ -1,0 +1,19 @@
+=============================================
+|                                           |
+|           CENTREON MUM System             |
+|                                           |
+|===========================================|
+
+Status Indicator
+(!)  = Experimental
+(?)  = Unknown Problem Still Occured
+(OK) = System Stable
+
+
+DASHBOARD (OK)
+
+Feature :
+	1. Saat ini Dashboard MUM di centreon dapat menampilkan informasi alert yang terjadi di bus, baik itu redled ataupun pft yang disatukan dalam 1 dashboard
+	2. Menampilkan alert dalam priority tertentu (sortir) baik itu berdasarkan durasi, jenis alert (redled atau pft), maupun yang lainnya (custom)
+	   saat ini dashboard disortir berdasarkan tipe alert redled dan durasi, jadi yang prioritas selalu ada disebelah kiri
+	3. 
